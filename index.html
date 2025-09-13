@@ -254,15 +254,19 @@
           <div class="flex justify-end">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">上學期剩餘點數</label>
-              <div class="flex items-center space-x-2">
-                <input type="number" id="previousPoints"
-                       class="border border-gray-300 rounded-lg px-3 py-2 w-20 text-center"
-                       value="0" min="0" readonly>
-                <button onclick="showPasswordModal()"
-                        class="bg-slate-300 hover:bg-slate-400 text-white px-2 py-2 rounded-lg text-sm font-semibold transition-colors">
-                  編輯
-                </button>
-              </div>
+             <div class="flex items-center space-x-2">
+  <input type="number" id="previousPoints"
+         class="border border-gray-300 rounded-lg px-3 py-2 w-20 text-center"
+         value="0" min="0" readonly>
+  <button onclick="showPasswordModal()"
+          class="bg-slate-300 hover:bg-slate-400 text-white px-2 py-2 rounded-lg text-sm font-semibold transition-colors">
+    編輯
+  </button>
+  <button onclick="uploadCurrentData()"
+          class="bg-blue-300 hover:bg-blue-400 text-white px-2 py-2 rounded-lg text-sm font-semibold transition-colors">
+    上傳
+  </button>
+</div>
             </div>
           </div>
           <!-- 到這裡 -->
@@ -1625,6 +1629,25 @@ function verifyPassword() {
     }, 30000);
     // ===== 你的 JavaScript Code 結束 =====
   </script>
+<script>
+async function uploadCurrentData() {
+    if (!currentStudentData.studentName) {
+        alert('請先選擇學生！');
+        return;
+    }
+    
+    try {
+        await saveToFirebase();
+        showFeedback(`${currentStudentData.studentName}的資料已上傳到雲端！`);
+    } catch (error) {
+        showFeedback('上傳失敗，請檢查網路連線', 'error');
+        console.error('Firebase上傳錯誤:', error);
+    }
+}
+
+// 將函數加入全域可用
+window.uploadCurrentData = uploadCurrentData;
+</script>
 
 
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97e2aa81a32b6c01',t:'MTc1NzcxNDMwNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
