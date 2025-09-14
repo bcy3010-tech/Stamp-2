@@ -1520,17 +1520,6 @@ function showPasswordModal() {
 function closePasswordModal() {
     document.getElementById("passwordModal").style.display = "none";
 }
-
-// 驗證密碼
-function verifyPassword() {
-    const input = document.getElementById("passwordInput").value;
-    if (input === correctPassword) {
-        document.getElementById("previousPoints").removeAttribute("readonly"); // 解鎖編輯
-        closePasswordModal();
-        alert("密碼正確，已可編輯上學期剩餘點數！");
-    } else {
-        alert("密碼錯誤！");
-    }
 }
 </script>
 
