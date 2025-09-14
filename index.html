@@ -856,6 +856,7 @@
             generateStamps();
             updateProgressDisplay();
             updateGiftDisplay();
+            updateGiftAvailability();
         }
 
         // 移除學生切換視窗功能，改為直接切換
@@ -1189,6 +1190,7 @@
             
             closeEditPointsModal();
             updateProgressDisplay();
+            updateGiftAvailability();
         }
 
         function checkGiftRequirement(requiredPoints, labelElement) {
@@ -1377,7 +1379,39 @@
         function closeRewardModal() {
             document.getElementById('rewardModal').style.display = 'none';
         }
-
+function updateGiftAvailability() {
+    const currentStamps = currentStudentData.stamps.length;
+    const totalPoints = currentStamps + currentStudentData.previousPoints;
+    
+    // 更新所有禮物項目的可選狀態
+    const giftLabels = document.querySelectorAll('label[onclick*="checkGiftRequirement"]');
+    
+    giftLabels.forEach(label => {
+        const onclickAttr = label.getAttribute('onclick');
+        // 從 onclick 屬性中提取需要的點數
+        const match = onclickAttr.match(/checkGiftRequirement\((\d+),/);
+        if (match) {
+            const requiredPoints = parseInt(match[1]);
+            const checkbox = label.querySelector('input[type="checkbox"]');
+            
+            if (totalPoints >= requiredPoints) {
+                // 有足夠點數 - 啟用
+                label.classList.remove('opacity-50');
+                label.style.cursor = 'pointer';
+                if (checkbox && !currentStudentData.selectedGifts.includes(label.textContent.trim())) {
+                    checkbox.disabled = false;
+                }
+            } else {
+                // 點數不足 - 停用
+                label.classList.add('opacity-50');
+                label.style.cursor = 'not-allowed';
+                if (checkbox && !checkbox.checked) {
+                    checkbox.disabled = true;
+                }
+            }
+        }
+    });
+}
         function showFeedback(message, type = 'success') {
             const feedback = document.createElement('div');
             let bgColor = 'bg-green-500';
@@ -1468,7 +1502,7 @@
             // 初始化固定學生
             initializeCard();
             
-            // 嘗試從Firebase載入許振穎的資料
+            // 嘗試從Firebase載入學生的資料
             setTimeout(async () => {
                 await loadFromFirebase();
             }, 500);
@@ -1599,6 +1633,8 @@ function verifyPassword() {
         generateStamps();
         updateProgressDisplay();
         initializeCard();
+        
+        updateGiftAvailability();
         
         setTimeout(async () => {
             try {
